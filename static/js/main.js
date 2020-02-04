@@ -1,9 +1,15 @@
 import {htmlToElement, secondsToTimecode} from './util.js'
 import {playHTML, pauseHTML, volHTML, muteHTML, configHTML, fsHTML}  from './icons.js'
+import {ValidationError} from './error.js'
 
 
-function PlayerUI(element, mediaUrl) {
-  if (mediaUrl.includes('.m3u8')) {
+function PlayerUI(element, configOptions) {
+  // if (typeof configOptions !== Object) {
+  //   // throw new ValidationError('Configuration is not an object')
+  //   console.log('no object')
+  // }
+  
+  if (configOptions.source.includes('.m3u8')) {
     console.log('yes')
   } else {
     console.log('no')
@@ -128,9 +134,11 @@ function PlayerUI(element, mediaUrl) {
     })
     videoElem.addEventListener('volumechange', function(){
       if (volumeSlider.value == 0) {
+        videoElem.muted = true
         volumeButton.removeChild(volumeButton.childNodes[0])
         volumeButton.appendChild(muteSVG)
       } else {
+        videoElem.muted = false
         volumeButton.removeChild(volumeButton.childNodes[0])
         volumeButton.appendChild(volumeSVG)
       }
@@ -145,20 +153,24 @@ function PlayerUI(element, mediaUrl) {
       labelElem.setAttribute('for', 'quality')
       labelElem.id = i
       labelElem.className = 'container'
-      labelElem.innerHTML = arr[i].height + 'p (' + parseInt(arr[i].bitrate)/1000 + ' kb/s)' 
 
       let inputElem = document.createElement('input')
       inputElem.setAttribute('type', 'radio')
       inputElem.setAttribute('name', 'quality')
   
       let spanElem = document.createElement('span')
+      spanElem.innerHTML = arr[i].height + 'p' 
   
       labelElem.appendChild(inputElem)
       labelElem.appendChild(spanElem)
       wrapperElem.appendChild(labelElem)
 
       labelElem.onclick = function() {
+        inputElem.checked = true
         hls.currentLevel = i
+        if (videoElem.paused) {
+
+        }
         console.log(i)
       }
     }
@@ -221,7 +233,7 @@ function PlayerUI(element, mediaUrl) {
   function bufferEventListeners() {
     videoElem.onwaiting = function() {
       loadingState.style.display = ''
-      loadingWrapper.style.backgroundColor = 'rgb(0, 0, 0, .5)' 
+      loadingWrapper.style.backgroundColor = 'rgb(0, 0, 0, .5)'
     }
   }
 
@@ -238,7 +250,7 @@ function PlayerUI(element, mediaUrl) {
     }
   })
 
-  setupHLS(mediaUrl)
+  setupHLS(configOptions.source)
   createCoreUi()
   createPlayUi()
   createProgressUi()

@@ -3,7 +3,7 @@
   border-radius: 15px;
   bottom: 7em;
   position: absolute;
-  right: 5%;
+  right: 8%;
   }
   
 .container {
@@ -22,7 +22,6 @@
   
 /* Hide the browser's default radio button */
 .container input {
-  position: absolute;
   cursor: pointer;
 }
 
@@ -43,7 +42,7 @@
 
 /* When the radio button is checked, add a blue background */
 .container input:checked {
-  color: blue;
+  background-color: blue;
 }
 
 /* Create the indicator (the dot/circle - hidden when not checked) */
@@ -51,6 +50,7 @@
   content: "";
   position: absolute;
   display: none;
+  background-color: #2196F3;
 }
 
   /* Style the indicator (dot/circle) */
@@ -60,7 +60,7 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: white;
+  background-color: #2196F3;
 }
 
 /* Show the indicator (dot/circle) when checked */
