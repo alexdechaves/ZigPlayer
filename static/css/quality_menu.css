@@ -23,7 +23,6 @@
 /* Hide the browser's default radio button */
 .container input {
   position: absolute;
-  opacity: 0;
   cursor: pointer;
 }
 
@@ -43,8 +42,8 @@
 }
 
 /* When the radio button is checked, add a blue background */
-.container input:checked ~ .checkmark {
-  background-color: red;
+.container input:checked {
+  color: blue;
 }
 
 /* Create the indicator (the dot/circle - hidden when not checked) */

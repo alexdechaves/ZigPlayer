@@ -2,40 +2,46 @@ import {htmlToElement, secondsToTimecode} from './util.js'
 import {playHTML, pauseHTML, volHTML, muteHTML, configHTML, fsHTML}  from './icons.js'
 
 
-function PlayerUI(element, manifestUrl) {
-    let playerWrapper = document.createElement('div')
-    let controlsWrapper = document.createElement('div')
-    
-    let videoElem = document.createElement('video')
-    const hls = new Hls()
+function PlayerUI(element, mediaUrl) {
+  if (mediaUrl.includes('.m3u8')) {
+    console.log('yes')
+  } else {
+    console.log('no')
+  }
 
-    let volumeContainer = document.createElement('div')
-    let volumeButton = document.createElement('button')
-    let volumeSlider = document.createElement('input')
-    let volumeSVG = htmlToElement(volHTML)
-    let muteSVG = htmlToElement(muteHTML)
-    
-    let playButton = document.createElement('button')
-    let playSVG = htmlToElement(playHTML)
-    let pauseSVG = htmlToElement(pauseHTML)
+  let playerWrapper = document.createElement('div')
+  let controlsWrapper = document.createElement('div')
+  
+  let videoElem = document.createElement('video')
+  const hls = new Hls()
 
-    let configButton = document.createElement('button')
-    let configSVG = htmlToElement(configHTML)
-    let wrapperElem = document.createElement('div')
+  let volumeContainer = document.createElement('div')
+  let volumeButton = document.createElement('button')
+  let volumeSlider = document.createElement('input')
+  let volumeSVG = htmlToElement(volHTML)
+  let muteSVG = htmlToElement(muteHTML)
+  
+  let playButton = document.createElement('button')
+  let playSVG = htmlToElement(playHTML)
+  let pauseSVG = htmlToElement(pauseHTML)
+
+  let configButton = document.createElement('button')
+  let configSVG = htmlToElement(configHTML)
+  let wrapperElem = document.createElement('div')
 
 
-    let fsSVG = htmlToElement(fsHTML)
-    let fsButton = document.createElement('button')
+  let fsSVG = htmlToElement(fsHTML)
+  let fsButton = document.createElement('button')
 
-    let progressWrapper = document.createElement('div')
-    let progressBar = document.createElement('input')
-    let presentTimeLabel = document.createElement('div')
-    let durationTimeLabel = document.createElement('div')
+  let progressWrapper = document.createElement('div')
+  let progressBar = document.createElement('input')
+  let presentTimeLabel = document.createElement('div')
+  let durationTimeLabel = document.createElement('div')
 
-    let loadingState = document.createElement('div')
-    let loadingWrapper = document.createElement('div')
+  let loadingState = document.createElement('div')
+  let loadingWrapper = document.createElement('div')
 
-    let config = []
+  let config = []
 
   function createCoreUi () {
     playerWrapper.className = 'wrapper'
@@ -93,13 +99,6 @@ function PlayerUI(element, manifestUrl) {
     configButton.className = 'vp-config-button'
     configButton.appendChild(configSVG)
     controlsWrapper.appendChild(configButton)
-    configButton.addEventListener('click', function(){
-      if (wrapperElem.style.display == ''){
-        wrapperElem.style.display = 'none'
-      } else if (wrapperElem.style.display == 'none') {
-        wrapperElem.style.display = ''
-      }
-    })
   }
 
   function createLoadingUi() {
@@ -140,22 +139,35 @@ function PlayerUI(element, manifestUrl) {
 
   function initQualityMenuUi(arr, element) {
     wrapperElem.className = 'quality-wrapper'
-    // wrapperElem.style.display = 'none'
+    wrapperElem.style.display = 'none'
     for(let i = 0; i <= arr.length-1; i += 1) {
       let labelElem = document.createElement('label')
+      labelElem.setAttribute('for', 'quality')
+      labelElem.id = i
       labelElem.className = 'container'
-      labelElem.innerHTML = arr.height[i] +'p'
+      labelElem.innerHTML = arr[i].height + 'p (' + parseInt(arr[i].bitrate)/1000 + ' kb/s)' 
 
       let inputElem = document.createElement('input')
       inputElem.setAttribute('type', 'radio')
+      inputElem.setAttribute('name', 'quality')
   
       let spanElem = document.createElement('span')
   
       labelElem.appendChild(inputElem)
       labelElem.appendChild(spanElem)
       wrapperElem.appendChild(labelElem)
+
+      labelElem.onclick = function() {
+        hls.currentLevel = i
+        console.log(i)
+      }
     }
+    hls.on(Hls.Events.LEVEL_SWITCHED, function(data, event){
+      console.log(data, event.level)
+    })
+      
     element.appendChild(wrapperElem)
+
   }
 
 
@@ -213,7 +225,20 @@ function PlayerUI(element, manifestUrl) {
     }
   }
 
-  setupHLS(manifestUrl)
+
+  configButton.addEventListener('click', function(){
+    if (wrapperElem.style.display == ''){
+      wrapperElem.style.display = 'none'
+      console.log(hls.currentLevel)
+    } else if (wrapperElem.style.display == 'none') {
+      wrapperElem.style.display = ''
+      console.log(hls.currentLevel)
+    } else {
+      console.log(hls.currentLevel)
+    }
+  })
+
+  setupHLS(mediaUrl)
   createCoreUi()
   createPlayUi()
   createProgressUi()
