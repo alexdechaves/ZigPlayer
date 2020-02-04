@@ -2,5 +2,8 @@
   "private": "true",
   "name": "Player",
   "version": "3.15.7",
-  "description": "The Vimeo HTML Player"
+  "description": "The Vimeo HTML Player",
+  "dependencies": {
+    "hls.js": "^0.13.1"
   }
+}

@@ -1,7 +1,37 @@
+#root {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%;
+}
+
 .wrapper {
   position: absolute;
-  width: 640px;
-  height: 360px;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.controls-wrapper {
+  position: absolute;
+  width: 100%;
+  height: 6.5em;
+  bottom: 0;
+  background-color: rgba(0,0,0, .5);
+  opacity: 0;
+  transition: opacity .5s ease-in-out;
+  z-index: 2;
+}
+
+.hidden {
+  display: none;
+}
+
+.wrapper:hover .controls-wrapper {
+  opacity: 1;
 }
 
 .vp-wrapper {
@@ -9,55 +39,165 @@
 }
 
 .vp-play-button {
-  position: relative;
-  bottom: 50px;
-  left: 300px;
+  position: absolute;
+  bottom: 30%;
+  left: 48%;
   width: 40px;
   height: 40px;
   border: none;
   outline: none;
-  background-color: rgba(0,0,0, 0)
+  background-color: rgba(0,0,0, 0);
 }
 
 .vp-play-icon {
-  fill: rgb(234,234,234);
+  fill: rgb(255, 255, 255);
 }
 
-.vp-play-icon-hover {
-  fill: grey;
+.vp-play-icon:hover {
+  fill: rgb(172, 172, 172);
 }
+
 
 .video {
-  width: 100%;
   height: 100%;
+  z-index: -1;
 }
 
 .vp-volume-button {
   position: absolute;
-  bottom: 15px;
-  left: 35px;
+  bottom: 30%;
+  left: 9%;
   width: 40px;
   height: 40px;
   border: none;
   outline: none;
-  background-color: rgba(0,0,0, 0)
+  background-color: rgba(0,0,0, 0);
+  z-index: 1;
+}
+
+#volumeContainer:hover .slider {
+  opacity: 1;
 }
 
 .slider {
-  position: relative;
-  bottom: 77px;
-  left: 70px;
+  position: absolute;
+  bottom: 46%;
+  left: 13%;
   -webkit-appearance: none;
   width: 100px;
   height: 10px;
   border-radius: 5px;
   background: #d3d3d3;
   outline: none;
-  opacity: 1;
-  -webkit-transition: 0.2s;
-  transition: opacity 0.2s;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
 }
 
-.slider-hidden {
+.slider:hover {
+  opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #3498db;
+  cursor: pointer;
+}
+
+.progress-slider {
+  position: absolute;
+  top: -5;
+  left: -2;
+  -webkit-appearance: none;
+  width: 100%;
+  height: 5px;
+  background: #d3d3d3;
+  outline: none;
+  transition: height 0.3s ease-in-out;
+}
+
+.progress-slider:hover {
+  height: 10px;
+}
+
+.progress-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #3498db;
+  cursor: pointer;
+  transition: height 0.2s ease-in-out;
+  transition: width 0.2s ease-in-out;
+}
+
+
+.progress-slider::-webkit-slider-thumb:hover {
+  width: 15px;
+  height: 15px;
+}
+
+.progress-slider:hover .progress-slider::-webkit-slider-thumb {
+  width: 15px;
+  height: 15px;
+}
+
+.hidden {
   display: none;
+}
+
+.vp-config-button {
+  position: absolute;
+  bottom: 30%;
+  right: 10%;
+  width: 40px;
+  height: 40px;
+  border: none;
+  outline: none;
+  background-color: rgba(0,0,0, 0);
+}
+
+.vp-config-button:hover {
+  position: absolute;
+  bottom: 30%;
+  right: 10%;
+  width: 40px;
+  height: 40px;
+  border: none;
+  outline: none;
+  background-color: rgba(0,0,0, 0);
+}
+
+
+.vp-fs-button {
+  position: absolute;
+  bottom: 30%;
+  right: 2%;
+  width: 40px;
+  height: 40px;
+  border: none;
+  outline: none;
+  background-color: rgba(0,0,0, 0);
+}
+
+.timecode-label {
+  position: absolute;
+  font-family: Helvetica;
+  font-size: .9em;
+  color: white;
+  top: 11%;
+  left: 10px;
+}
+
+.duration-label {
+  position: absolute;
+  font-family: Helvetica;
+  font-size: .9em;
+  color: white;
+  top: 10%;
+  right: 10px;
 }
