@@ -148,7 +148,24 @@ function PlayerUI(element, configOptions) {
   function initQualityMenuUi(arr, element) {
     wrapperElem.className = 'quality-wrapper'
     wrapperElem.style.display = 'none'
-    for(let i = 0; i <= arr.length-1; i += 1) {
+
+    let labelAuto = document.createElement('label')
+    labelAuto.setAttribute('for', 'quality')
+    labelAuto.id = arr.length
+    labelAuto.className = 'container'
+
+    let inputAuto = document.createElement('input')
+    inputAuto.setAttribute('type', 'radio')
+    inputAuto.setAttribute('name', 'quality')
+
+    let spanAuto = document.createElement('span')
+    spanAuto.innerHTML = 'Auto'
+
+    labelAuto.appendChild(inputAuto)
+    labelAuto.appendChild(spanAuto)
+    wrapperElem.appendChild(labelAuto)
+
+    for(let i = arr.length-1; i >= 0; i -= 1) {
       let labelElem = document.createElement('label')
       labelElem.setAttribute('for', 'quality')
       labelElem.id = i
@@ -168,18 +185,19 @@ function PlayerUI(element, configOptions) {
       labelElem.onclick = function() {
         inputElem.checked = true
         hls.currentLevel = i
-        if (videoElem.paused) {
-
-        }
+        wrapperElem.style.display = 'none'
         console.log(i)
       }
     }
+
     hls.on(Hls.Events.LEVEL_SWITCHED, function(data, event){
       console.log(data, event.level)
+      // if (videoElem.paused && videoElem.currentTime > 1) {
+      //   videoElem.play()
+      // }
     })
       
     element.appendChild(wrapperElem)
-
   }
 
 
@@ -189,7 +207,7 @@ function PlayerUI(element, configOptions) {
       hls.attachMedia(videoElem)
       hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
         // config.sort(function(a, b){return b.height-a.height})
-        console.log('Player Config: ', data.levels)
+        console.log('Player Config: ', data)
         initQualityMenuUi(data.levels, controlsWrapper)
       })
       }
@@ -250,6 +268,16 @@ function PlayerUI(element, configOptions) {
     }
   })
 
+  function fullscreenEventListeners() {
+    fsButton.addEventListener('click', function () {
+      if (!document.fullscreen) {
+        playerWrapper.requestFullscreen()
+      } else {
+        document.exitFullscreen()
+      }
+    })
+  }
+
   setupHLS(configOptions.source)
   createCoreUi()
   createPlayUi()
@@ -262,6 +290,7 @@ function PlayerUI(element, configOptions) {
   playEventListenersStart()
   progressEventListeners()
   bufferEventListeners()
+  fullscreenEventListeners()
   }
 
 
