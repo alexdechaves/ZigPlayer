@@ -60,7 +60,7 @@ function PlayerUI(element, configOptions) {
   let loadingState = document.createElement('div')
   let loadingWrapper = document.createElement('div')
 
-  let config = []
+  let ghostTimecode = document.createElement('div')
 
   function createCoreUi () {
     playerWrapper.className = 'wrapper'
@@ -84,10 +84,15 @@ function PlayerUI(element, configOptions) {
     progressBar.setAttribute('step', 0.001)
     progressBar.setAttribute('type', 'range')
     progressBar.className = 'progress-slider'
+
+    ghostTimecode.className = 'ghost-timecode'
+    ghostTimecode.style.display = 'none'
+
     progressWrapper.appendChild(progressBar)
     controlsWrapper.appendChild(progressWrapper)
     controlsWrapper.appendChild(presentTimeLabel)
     controlsWrapper.appendChild(durationTimeLabel)
+    progressWrapper.appendChild(ghostTimecode)
   }
 
   function createVolumeUi () {
@@ -275,18 +280,19 @@ function PlayerUI(element, configOptions) {
     }
   }
 
-
-  configButton.addEventListener('click', function(){
-    if (wrapperElem.style.display == ''){
-      wrapperElem.style.display = 'none'
-      console.log(hls.currentLevel)
-    } else if (wrapperElem.style.display == 'none') {
-      wrapperElem.style.display = ''
-      console.log(hls.currentLevel)
-    } else {
-      console.log(hls.currentLevel)
-    }
-  })
+  function configEventListeners() {
+    configButton.addEventListener('click', function(){
+      if (wrapperElem.style.display == ''){
+        wrapperElem.style.display = 'none'
+        console.log(hls.currentLevel)
+      } else if (wrapperElem.style.display == 'none') {
+        wrapperElem.style.display = ''
+        console.log(hls.currentLevel)
+      } else {
+        console.log(hls.currentLevel)
+      }
+    })
+  }
 
   function fullscreenEventListeners() {
     fsButton.addEventListener('click', function () {
@@ -297,6 +303,23 @@ function PlayerUI(element, configOptions) {
       }
     })
   }
+
+  function setupPlaybarTimecode() {
+    progressBar.onmousemove = function (e) {
+        var x = e.pageX - this.offsetLeft
+        let clickedValue = x * this.max / this.offsetWidth
+        ghostTimecode.style.left = e.pageX
+        ghostTimecode.innerHTML = secondsToTimecode((clickedValue * videoElem.duration) - 5)
+    }
+
+    progressBar.onmouseover = function () {
+      ghostTimecode.style.display = ''
+    }
+
+    progressBar.onmouseout = function () {
+      ghostTimecode.style.display = 'none'
+    }
+    }
 
   setupHLS(configOptions.source)
   createCoreUi()
@@ -311,6 +334,8 @@ function PlayerUI(element, configOptions) {
   progressEventListeners()
   bufferEventListeners()
   fullscreenEventListeners()
+  configEventListeners()
+  setupPlaybarTimecode()
   }
 
 

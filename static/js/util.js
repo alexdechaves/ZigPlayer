@@ -8,5 +8,9 @@ export function htmlToElement(html) {
 export function secondsToTimecode(seconds) {
   let date = new Date(null);
   date.setSeconds(Math.floor(seconds)) // specify value for SECONDS here
-  return date.toISOString().substr(11, 8)
+  if (seconds < 3600) {
+    return date.toISOString().substr(14, 5)
+  } else {
+    return date.toISOString().substr(11, 8)
+  }
 }

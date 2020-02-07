@@ -202,3 +202,11 @@
   top: 10%;
   right: 10px;
 }
+
+.ghost-timecode {
+  font-family: Helvetica;
+  color: white;
+  top: -20px;
+  position: absolute;
+  background-color: rgba(0,0,0, .3);
+}
