@@ -3,6 +3,19 @@ import {playHTML, pauseHTML, volHTML, muteHTML, configHTML, fsHTML}  from './ico
 import {ValidationError} from './error.js'
 
 
+
+let firebaseConfig = {
+      apiKey: "AIzaSyBXbSINS-LEDzfvd-J9w4ZV3nYzfn23zJk",
+      authDomain: "octave-b383b.firebaseapp.com",
+      databaseURL: "https://octave-b383b.firebaseio.com",
+      projectId: "octave-b383b",
+      storageBucket: "octave-b383b.appspot.com",
+      messagingSenderId: "429867685828",
+      appId: "1:429867685828:web:532d3cbc379edf25517691",
+      measurementId: "G-F2B3228FWD"
+    }
+
+
 function PlayerUI(element, configOptions) {
   // if (typeof configOptions !== Object) {
   //   // throw new ValidationError('Configuration is not an object')
@@ -160,6 +173,13 @@ function PlayerUI(element, configOptions) {
 
     let spanAuto = document.createElement('span')
     spanAuto.innerHTML = 'Auto'
+
+    labelAuto.onclick = function() {
+      inputAuto.checked = true
+      hls.currentLevel = -1
+      wrapperElem.style.display = 'none'
+      console.log('Auto enabled')
+    }
 
     labelAuto.appendChild(inputAuto)
     labelAuto.appendChild(spanAuto)
