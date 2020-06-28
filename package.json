@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "dependencies": {
+    "hls.js": "^0.13.2"
+  },
+  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -15,10 +19,5 @@
   "bugs": {
     "url": "https://github.com/alexdechaves/finalProject/issues"
   },
-  "homepage": "https://github.com/alexdechaves/finalProject#readme",
-  "dependencies": {
-    "hls.js": "^0.13.2"
-  },"scripts": {
-    "start": "serve"
-  }
+  "homepage": "https://github.com/alexdechaves/finalProject#readme"
 }
