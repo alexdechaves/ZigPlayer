@@ -28,6 +28,8 @@ function PlayerUI(element, configOptions) {
     console.log('no')
   }
 
+// ------------------INIT----------------------------- //
+
   let playerWrapper = document.createElement('div')
   let controlsWrapper = document.createElement('div')
   
@@ -54,6 +56,7 @@ function PlayerUI(element, configOptions) {
 
   let progressWrapper = document.createElement('div')
   let progressBar = document.createElement('input')
+  let playedBar = document.createElement('div')
   let presentTimeLabel = document.createElement('div')
   let durationTimeLabel = document.createElement('div')
 
@@ -61,6 +64,10 @@ function PlayerUI(element, configOptions) {
   let loadingWrapper = document.createElement('div')
 
   let ghostTimecode = document.createElement('div')
+
+
+  // ------------------UI-METHODS----------------------- //
+
 
   function createCoreUi () {
     playerWrapper.className = 'wrapper'
@@ -85,6 +92,8 @@ function PlayerUI(element, configOptions) {
     progressBar.setAttribute('type', 'range')
     progressBar.className = 'progress-slider'
 
+    playedBar.className = 'played'
+
     ghostTimecode.className = 'ghost-timecode'
     ghostTimecode.style.display = 'none'
 
@@ -93,6 +102,7 @@ function PlayerUI(element, configOptions) {
     controlsWrapper.appendChild(presentTimeLabel)
     controlsWrapper.appendChild(durationTimeLabel)
     progressWrapper.appendChild(ghostTimecode)
+    progressWrapper.appendChild(playedBar)
   }
 
   function createVolumeUi () {
@@ -111,7 +121,6 @@ function PlayerUI(element, configOptions) {
     volumeButton.appendChild(volumeSVG)
     volumeContainer.appendChild(volumeButton)
   }
-
 
   function createFullscreenUi() {
     fsButton.className = 'vp-fs-button'
@@ -133,10 +142,14 @@ function PlayerUI(element, configOptions) {
     loadingState.style.display = 'none' 
   }
 
+  // ------------------EVENT-LISTENERS--------------------- //
+
   function addVolumeEventListeners () {
-    volumeSlider.oninput = function() {
+    volumeSlider.oninput = function() { // Actual control binding to video element
       videoElem.volume = this.value
     }
+
+    // Main mute/un-mute control
     volumeButton.addEventListener('click', function () {
       if(videoElem.muted){
         videoElem.muted = false
@@ -150,6 +163,8 @@ function PlayerUI(element, configOptions) {
         volumeSlider.value = 0
       }
     })
+    
+    // Listener for when volume is 0 then set to muted and vice-versa
     videoElem.addEventListener('volumechange', function(){
       if (volumeSlider.value == 0) {
         videoElem.muted = true
@@ -164,9 +179,11 @@ function PlayerUI(element, configOptions) {
   }
 
   function initQualityMenuUi(arr, element) {
+    // Main element
     wrapperElem.className = 'quality-wrapper'
     wrapperElem.style.display = 'none'
 
+    // -------- Auto Label----------
     let labelAuto = document.createElement('label')
     labelAuto.setAttribute('for', 'quality')
     labelAuto.id = arr.length
@@ -179,6 +196,7 @@ function PlayerUI(element, configOptions) {
     let spanAuto = document.createElement('span')
     spanAuto.innerHTML = 'Auto'
 
+    // listener for the auto ABR functionality
     labelAuto.onclick = function() {
       inputAuto.checked = true
       hls.currentLevel = -1
@@ -190,6 +208,7 @@ function PlayerUI(element, configOptions) {
     labelAuto.appendChild(spanAuto)
     wrapperElem.appendChild(labelAuto)
 
+    // Loops through the hls levels array for level control
     for(let i = arr.length-1; i >= 0; i -= 1) {
       let labelElem = document.createElement('label')
       labelElem.setAttribute('for', 'quality')
@@ -227,18 +246,21 @@ function PlayerUI(element, configOptions) {
 
 
   function setupHLS(manifestUrl) {
+    // HLS to Video element binding
     if(Hls.isSupported()) {
       hls.loadSource(manifestUrl)
       hls.attachMedia(videoElem)
       hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
         // config.sort(function(a, b){return b.height-a.height})
         console.log('Player Config: ', data)
-        initQualityMenuUi(data.levels, controlsWrapper)
+        initQualityMenuUi(data.levels, controlsWrapper) // initializing of quality menu
+        // only works here because the array in undefined unless the hls manifest is parsed
       })
       }
       }
   
   function playEventListenersStart() {
+    // play/pause click handlers
     playButton.addEventListener('click', function () {
       if(videoElem.paused){
         videoElem.play()
@@ -265,6 +287,7 @@ function PlayerUI(element, configOptions) {
       }
       loadingState.style.display = 'none'
       loadingWrapper.style.backgroundColor = '' 
+      playedBar.style.width = (progressBar.value * 100 + .3).toString() + '%'
       progressBar.value = videoElem.currentTime / videoElem.duration
       presentTimeLabel.innerHTML = '<span>' + secondsToTimecode(Math.floor(videoElem.currentTime)) + '</span>'
       presentTimeLabel.className = 'timecode-label'
@@ -306,10 +329,10 @@ function PlayerUI(element, configOptions) {
 
   function setupPlaybarTimecode() {
     progressBar.onmousemove = function (e) {
-        var x = e.pageX - this.offsetLeft
-        let clickedValue = x * this.max / this.offsetWidth
-        ghostTimecode.style.left = e.pageX
-        ghostTimecode.innerHTML = secondsToTimecode((clickedValue * videoElem.duration) - 5)
+      var x = e.pageX - this.offsetLeft
+      let clickedValue = x * this.max / this.offsetWidth
+      ghostTimecode.style.left = e.pageX
+      ghostTimecode.innerHTML = secondsToTimecode((clickedValue * videoElem.duration) - 5)
     }
 
     progressBar.onmouseover = function () {
@@ -319,14 +342,22 @@ function PlayerUI(element, configOptions) {
     progressBar.onmouseout = function () {
       ghostTimecode.style.display = 'none'
     }
+  }
+
+
+
+  function setupBufferListener() {
+    videoElem.onprogress = function() {
+      console.log(videoElem.buffered.length, videoElem.buffered.start(0), videoElem.buffered.end(0))
     }
+  }
 
   setupHLS(configOptions.source)
   createCoreUi()
   createPlayUi()
   createProgressUi()
   createVolumeUi()
-  createConfigUi()
+  // createConfigUi()
   createLoadingUi()
   createFullscreenUi()
   addVolumeEventListeners()
@@ -336,6 +367,7 @@ function PlayerUI(element, configOptions) {
   fullscreenEventListeners()
   configEventListeners()
   setupPlaybarTimecode()
+  setupBufferListener()
   }
 
 
