@@ -4,12 +4,17 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
-    "hls.js": "^0.13.2"
+    "express": "^4.17.1",
+    "hls.js": "^0.14.7",
+    "lodash": "^4.17.19"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server/server.js"
+    "start": "serve"
   },
   "repository": {
     "type": "git",
