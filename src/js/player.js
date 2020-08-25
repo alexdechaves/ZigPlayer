@@ -1,7 +1,7 @@
 import {htmlToElement, secondsToTimecode} from './util.js'
 import {playHTML, pauseHTML, volHTML, muteHTML, configHTML, fsHTML}  from './icons.js'
 import {ValidationError} from './error.js'
-import Hls from "hls.js"
+
 
 
 function PlayerUI(element, configOptions) {
